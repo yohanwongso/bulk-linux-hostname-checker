@@ -1,27 +1,36 @@
 from paramiko import SSHClient,AutoAddPolicy
-from re import match
+import csv
 
-uname = ""
-pword = ""
+uname = "csoc-thor"
+pword = "6Vk9@4erLXJD"
 
 list_ip_file = open("ip.txt", "r")
 
-for ip_with_enter in list_ip_file:
-    ip = ip_with_enter.replace("\n", "")
+with open('report.csv', 'w', newline='', encoding='utf-8') as f:
+    writer = csv.writer(f)
+    csv_header = ["IP", "Hostname"]
+    writer.writerow(csv_header)
 
-    client = SSHClient()
-    #client.load_system_host_keys()
-    #client.load_host_keys('~/.ssh/known_hosts')
-    client.set_missing_host_key_policy(AutoAddPolicy())
+    for ip_with_enter in list_ip_file:
+        ip = ip_with_enter.replace("\n", "")
 
-    client.connect(ip, username = uname, password = pword)
+        client = SSHClient()
+        #client.load_system_host_keys()
+        #client.load_host_keys('~/.ssh/known_hosts')
+        client.set_missing_host_key_policy(AutoAddPolicy())
 
-    stdin, stdout, stderr = client.exec_command('hostname')
+        client.connect(ip, username = uname, password = pword)
 
-    output = stdout.read().decode("utf8").replace("\n", "")
-    print (ip, "\t", output)
+        stdin, stdout, stderr = client.exec_command('hostname')
 
-    stdin.close()
-    stdout.close()
-    stderr.close()
-    client.close()
+        output = stdout.read().decode("utf8").replace("\n", "")
+        csv_data = [ip, output]
+
+        writer.writerow(csv_data)
+
+        stdin.close()
+        stdout.close()
+        stderr.close()
+        client.close()
+
+    f.close()
