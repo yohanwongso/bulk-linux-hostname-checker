@@ -1,8 +1,8 @@
 from paramiko import SSHClient,AutoAddPolicy
 import csv
 
-uname = "csoc-thor"
-pword = "6Vk9@4erLXJD"
+uname = ""
+pword = ""
 
 list_ip_file = open("ip.txt", "r")
 
