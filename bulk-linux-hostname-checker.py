@@ -14,23 +14,29 @@ with open('report.csv', 'w', newline='', encoding='utf-8') as f:
     for ip_with_enter in list_ip_file:
         ip = ip_with_enter.replace("\n", "")
 
-        client = SSHClient()
-        #client.load_system_host_keys()
-        #client.load_host_keys('~/.ssh/known_hosts')
-        client.set_missing_host_key_policy(AutoAddPolicy())
+        print (ip)
 
-        client.connect(ip, username = uname, password = pword)
+        try:
+            client = SSHClient()
+            #client.load_system_host_keys()
+            #client.load_host_keys('~/.ssh/known_hosts')
+            client.set_missing_host_key_policy(AutoAddPolicy())
 
-        stdin, stdout, stderr = client.exec_command('hostname')
+            client.connect(ip, username = uname, password = pword)
 
-        output = stdout.read().decode("utf8").replace("\n", "")
-        csv_data = [ip, output]
+            stdin, stdout, stderr = client.exec_command('hostname')
 
-        writer.writerow(csv_data)
+            output = stdout.read().decode("utf8").replace("\n", "")
+            csv_data = [ip, output]
 
-        stdin.close()
-        stdout.close()
-        stderr.close()
-        client.close()
+            writer.writerow(csv_data)
+
+            stdin.close()
+            stdout.close()
+            stderr.close()
+            client.close()
+        except:
+            csv_data = [ip, ""]
+            writer.writerow(csv_data)
 
     f.close()
